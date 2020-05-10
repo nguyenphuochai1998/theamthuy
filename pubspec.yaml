@@ -70,6 +70,8 @@ flutter:
     - ic_join.png
     - ic_book.png
     - ic_class2.png
+    - ic_send_pass.png
+    - ic_history.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

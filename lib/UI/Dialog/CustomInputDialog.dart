@@ -22,7 +22,7 @@ class CustomInputDialog {
                   },
                 ),
                 FlatButton(
-                  child: Text("Hủy"),
+                  child: Text("Đóng"),
                   onPressed: () {
                     Navigator.of(context).pop(CustomInputDialog);
                   },

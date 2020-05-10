@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutterwebacsfinal/Fire/Fire.dart';
 import 'package:flutterwebacsfinal/UI/Class_Page.dart';
+import 'package:flutterwebacsfinal/UI/Dialog/ErrorDialog.dart';
+import 'package:flutterwebacsfinal/UI/Dialog/LoadDialog.dart';
+import 'package:flutterwebacsfinal/UI/Login_Page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'Class_List_Page.dart';
+import 'Info_Teacher_Page.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -53,6 +57,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Container(
               height: _sizeTopBaner.height,
+              width: _sizeTopBaner.width,
               child: Row(
                 children: [
                   Container(
@@ -85,6 +90,42 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     )
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      child: FlatButton(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: SizedBox(
+                            width: 150,
+                            height: 30,
+                            child: RaisedButton(
+                              onPressed:(){
+                                _fire.logOut(
+                                  isLogOut: (){
+                                    LoadingDialog.showLoadingDialog(context, "Đăng xuất");
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                                  },
+                                  isErr: (err){
+                                    ErrorDialog.showErrorDialog(context: context,msg: err);
+                                  }
+                                );
+                              }
+                              ,
+                              child: Text(
+                                "Đăng Xuất",
+                                style: TextStyle(color: Colors.white, fontSize: 18),
+                              ),
+                              color: Colors.blue,
+
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(6))),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   )
                 ],
               )
@@ -131,6 +172,9 @@ class _HomePageState extends State<HomePage> {
           title: Text("Thông Tin Cá Nhân"),
           onTap: () {
             setState(() {
+              if(_idTeacher != null){
+                _func = InfoTeacherPage(idTeacher: _idTeacher,user: _user,);
+              }
 
             });
           },

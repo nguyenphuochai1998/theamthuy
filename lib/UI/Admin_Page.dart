@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutterwebacsfinal/Fire/Fire.dart';
 import 'package:flutterwebacsfinal/UI/ClassManagemant_Admin_Page.dart';
 import 'package:flutterwebacsfinal/UI/TecherManagemant_Admin_Page.dart';
+
+import 'Dialog/ErrorDialog.dart';
+import 'Dialog/LoadDialog.dart';
+import 'Login_Page.dart';
 
 
 class AdminPage extends StatefulWidget {
@@ -13,6 +18,7 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
+  Fire _fire = new Fire();
   Widget _func = new Container();
   @override
   Widget build(BuildContext context) {
@@ -20,31 +26,52 @@ class _AdminPageState extends State<AdminPage> {
     Size _sizeMenu = new Size(_sizeScreen.width * 0.3, _sizeScreen.height);
     Size _sizeFunc =
         new Size(_sizeScreen.width - _sizeMenu.width, _sizeScreen.height);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "ADMIN",
+    return WillPopScope(
+      child:Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "ADMIN",
+          ),
         ),
-      ),
-      body: Container(
-        child: Stack(
-          children: <Widget>[
-            //giao dien chuc nang
-            Container(
-              margin: EdgeInsets.only(left: _sizeMenu.width),
-              width: _sizeFunc.width,
-              height: _sizeFunc.height,
-              child: _func,
-            ),
-            Container(
-              child: _Menu(),
-              height: _sizeMenu.height,
-              width: _sizeMenu.width,
-            ),
-          ],
+        floatingActionButton: new FloatingActionButton(
+          onPressed:(){
+            _fire.logOut(
+                isLogOut: (){
+                  LoadingDialog.showLoadingDialog(context, "Đăng xuất");
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                },
+                isErr: (err){
+                  ErrorDialog.showErrorDialog(context: context,msg: err);
+                }
+            );
+          }
+          ,
+          child: Text(
+            "Đăng Xuất",
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
         ),
-      ),
+        body: Container(
+          child: Stack(
+            children: <Widget>[
+              //giao dien chuc nang
+              Container(
+                margin: EdgeInsets.only(left: _sizeMenu.width),
+                width: _sizeFunc.width,
+                height: _sizeFunc.height,
+                child: _func,
+              ),
+              Container(
+                child: _Menu(),
+                height: _sizeMenu.height,
+                width: _sizeMenu.width,
+              ),
+            ],
+          ),
+        ),
+      ) ,
     );
+
   }
 
   Widget _Menu() {

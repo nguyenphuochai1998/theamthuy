@@ -39,8 +39,8 @@ class _TecherManagerAdminPageState extends State<TecherManagerAdminPage> {
   }
 
   // ui cho menu giáo viên
-  var _nameTagTM = ["Thêm Giáo Viên", "Sửa thông tin giáo viên"];
-  var _iconTagTM = ["ic_add_user.png", "ic_edit_user.png"];
+  var _nameTagTM = ["Thêm Giáo Viên", "Sửa thông tin giáo viên","Gửi Mật Khẩu Giáo Viên"];
+  var _iconTagTM = ["ic_add_user.png", "ic_edit_user.png","ic_send_pass.png"];
   Widget _MenuTecherManagemant() {
     return GridView.builder(
       itemCount: _iconTagTM.length,
@@ -77,6 +77,11 @@ class _TecherManagerAdminPageState extends State<TecherManagerAdminPage> {
           _FuncEditTecher(_bloc,context);
         }
         break;
+      case 2:
+        {
+          _FuncSendPassTeacher(_bloc,context);
+        }
+        break;
     }
   }
   void _FuncAddTecher(DialogBloc bloc, BuildContext context){
@@ -87,7 +92,7 @@ class _TecherManagerAdminPageState extends State<TecherManagerAdminPage> {
 
     CustomInputDialog.showMsgDialog(
         context: context,
-        okButton: "ok",
+        okButton: "Thêm Giáo viên",
         onClickOK: () {
 
           bool _isEmail,_isName,_isID,_isPhone;
@@ -234,6 +239,80 @@ class _TecherManagerAdminPageState extends State<TecherManagerAdminPage> {
           ),
         ),
         title: "Thêm Giáo Viên");
+  }
+  void _FuncSendPassTeacher(DialogBloc bloc, BuildContext context){
+    final TextEditingController _emailController = TextEditingController();
+
+    CustomInputDialog.showMsgDialog(
+        context: context,
+        okButton: "Lấy lại Pass",
+        onClickOK: () {
+
+          bool _isEmail;
+          _isEmail = bloc.CheckEmail(_emailController.text);
+          if(_isEmail){
+            LoadingDialog.showLoadingDialog(context,"Loading...");
+            _fire.SendPassTeacher(Email: _emailController.text,isSendPassToTecher: (msg){
+              LoadingDialog.hideLoadingDialog(context);
+              CustomInputDialog.hideLoadingDialog(context);
+              NotificationDialog.showNotificationDialog(
+                  context: context,
+                  msg: msg,
+                  onClickOkButton: (){
+
+                  }
+              );
+
+            },
+              isError: (err){
+                LoadingDialog.hideLoadingDialog(context);
+                ErrorDialog.showErrorDialog(
+                    msg: err,
+                    context: context
+                );
+
+              }
+            );
+
+          }
+
+
+        },
+        custom: Container(
+          width: 500,
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: StreamBuilder(
+                  stream: bloc.emailStream,
+                  builder: (context, snapshot) => TextField(
+                    controller: _emailController,
+                    style:
+                    TextStyle(fontSize: 18, color: Colors.blue),
+                    decoration: InputDecoration(
+                        labelText: "Email Giáo Viên",
+                        errorText:
+                        snapshot.hasError ? snapshot.error : null,
+                        prefixIcon: Container(
+                            padding: EdgeInsets.fromLTRB(6, 6, 6, 6),
+                            width: 50,
+                            child: Image.asset("ic_gmail.png")),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color(0xFFA8DBA8), width: 1),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(6)))),
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+        ),
+        title: "Lấy Lại Pass Giáo Viên");
+
+
   }
   void _FuncEditTecher(DialogBloc bloc, BuildContext context){
     final TextEditingController _emailController = TextEditingController();

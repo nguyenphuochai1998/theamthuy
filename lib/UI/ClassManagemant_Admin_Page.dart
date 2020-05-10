@@ -529,7 +529,7 @@ class _ClassManagerAdminPageState extends State<ClassManagerAdminPage> {
     var student = [];
     CustomInputDialog.showMsgDialog(
         context: context,
-        okButton: "Sửa",
+        okButton: "",
         onClickOK: () {
 
         },

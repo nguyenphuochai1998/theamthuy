@@ -33,6 +33,18 @@ class Fire{
           }
       });
   }
+  Future<void> SendPassTeacher({String Email,Function(String) isSendPassToTecher,Function(String) isError}) async {
+    await _auth.sendPasswordResetEmail(email: Email).then((val){
+      isSendPassToTecher("Đã gửi lại gmail cấp mật khẩu cho giáo viên này");
+    }).catchError((err){
+      if(err.code == "auth/user-not-found"){
+        isError("Không Có Giáo Viên Nào Có Gmail Này");
+      }else{
+        isError("Có Lỗi Xãy Ra");
+      }
+
+    });
+  }
   Future<void> getTeacherIDDoc({String ID,Function(String) isTeacherNull,Function(String) haveTeacher}) async {
      await _fireS.collection("Teacher").where("uid",isEqualTo: ID).getDocuments().then((value) {
        if(value.documents.length == 0) {
@@ -45,6 +57,13 @@ class Fire{
          });
        }
      });
+  }
+  Future<void> logOut({Function() isLogOut,Function(String) isErr}) async {
+    await _auth.signOut().then((value){
+          isLogOut();
+      }).catchError((err){
+        isErr("Gặp Lỗi !!");
+    });
   }
   Future<void> getClassIDDoc({String ID,Function(String) isClassNull,Function(String) haveClass}) async {
     await _fireS.collection("Class").where("IDClass",isEqualTo: ID).getDocuments().then((value) {
@@ -79,6 +98,12 @@ class Fire{
   }
   Stream<QuerySnapshot> listClassStreamByIDTeacher({String id}){
     return _fireS.collection("Class").where("Teacher",isEqualTo: id).snapshots();
+  }
+  Stream<QuerySnapshot> listClassHistoryStreamByIDClass({String id}){
+    return _fireS.collection("Class").document(id).collection("Period").orderBy("Start time",descending: true).snapshots();
+  }
+  Stream<QuerySnapshot> listClassHistoryStudentStream({String idClass,String idPeriod}){
+    return _fireS.collection("Class").document(idClass).collection("Period").document(idPeriod).collection("Student").orderBy("TimeToClass",descending: true).snapshots();
   }
   Future<void> addStudentClass({String id,String docID,Function(String) isSuccess,Function(String) isError}) async {
     await _fireS.collection("Class").document(docID).collection("Student").document().setData({
@@ -183,6 +208,12 @@ class Fire{
   Stream<QuerySnapshot> getStudentByIdStream({String ID}){
     return _fireS.collection("SinhVien").where("ID",isEqualTo: ID).snapshots();
   }
+  Stream<QuerySnapshot> getTeacherByIdStream({String ID}){
+    return _fireS.collection("Teacher").where("uid",isEqualTo: ID).snapshots();
+  }
+  Stream<QuerySnapshot> getInfoStudentByIdStream({String IDStudent,String IDClass}){
+    return _fireS.collection("Class").document(IDClass).collection("Student").where("ID",isEqualTo: IDStudent).snapshots();
+  }
   Future<DocumentSnapshot> getStudentByID({String StudentID}) async {
     DocumentSnapshot val;
     await _fireS.collection("SinhVien").where("ID",isEqualTo: StudentID).getDocuments().then((value) {
@@ -230,12 +261,14 @@ class Fire{
             }
           });
 
-    })
-        .catchError((err){
+    }).catchError((err){
       print(err.code);
       switch(err.code){
         case "auth/wrong-password":
           onErr("Mật Khẩu Không Đúng");
+          break;
+        case "auth/user-not-found":
+          onErr("Không Có Tài Khoản Này Trong Hệ Thống");
           break;
       }
 

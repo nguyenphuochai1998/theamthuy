@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterwebacsfinal/Fire/Fire.dart';
 import 'package:flutterwebacsfinal/UI/Attendance_Page.dart';
+import 'package:flutterwebacsfinal/UI/Class_History_Page.dart';
 import 'package:flutterwebacsfinal/UI/Class_List_Page.dart';
 import 'package:flutterwebacsfinal/UI/Dialog/CustomDialog.dart';
 import 'package:flutterwebacsfinal/UI/Dialog/LoadDialog.dart';
@@ -88,8 +89,8 @@ class _ClassPageState extends State<ClassPage> {
           widget.funcController.add(ClassListPage());
         });
   }
-  var _nameTagTM = ["Thêm Sinh Viên Vào Lớp", "Bắt Đầu Điểm Danh Buổi Học"];
-  var _iconTagTM = ["ic_add_user.png", "ic_join.png"];
+  var _nameTagTM = ["Xem Lịch Sử Buổi Học", "Bắt Đầu Điểm Danh Buổi Học"];
+  var _iconTagTM = ["ic_history.png", "ic_join.png"];
   Widget _MenuClassManagemant() {
     return GridView.builder(
       itemCount: _iconTagTM.length,
@@ -116,7 +117,7 @@ class _ClassPageState extends State<ClassPage> {
     switch (index) {
       case 0:
         {
-
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>HistoryClassPage(nameClass: widget.nameClass,docClassId: widget.idDocClass,)));
         }
         break;
       case 1:
@@ -271,10 +272,10 @@ class _ClassPageState extends State<ClassPage> {
                           _buttonPeriodStu(stream: _fire.getListStudentClassStream(DocID: widget.idDocClass),color: Colors.blue,txt: "Tất cả",onTap: (){
                             _studentPointController.add(_all);
                           }),
-                          _buttonPeriodStu(stream: _fire.getListStudentPeriodMissed2ClassStream(DocID: widget.idDocClass),color: Colors.amber,txt: "Vắng 2b",onTap: (){
+                          _buttonPeriodStu(stream: _fire.getListStudentPeriodMissed2ClassStream(DocID: widget.idDocClass),color: Colors.amber,txt: "Vắng 2 buổi",onTap: (){
                             _studentPointController.add(_2PeriodMissed);
                           }),
-                          _buttonPeriodStu(stream: _fire.getListStudentPeriodMissedBigClassStream(DocID: widget.idDocClass),color: Colors.redAccent,txt: "Vắng >2b",onTap: (){
+                          _buttonPeriodStu(stream: _fire.getListStudentPeriodMissedBigClassStream(DocID: widget.idDocClass),color: Colors.redAccent,txt: "Vắng quá 2 buổi",onTap: (){
                             _studentPointController.add(_BigPeriodMissed);
                           })
                         ],
