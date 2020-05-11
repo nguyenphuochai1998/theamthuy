@@ -44,10 +44,8 @@ class _HistoryClassStudentPageState extends State<HistoryClassStudentPage> {
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting: return new Text('Loading...');
                           default:
-                            int bNghi = 0;
-                            snapshotStu.data.documents.map((data) {
-                              bNghi = data.data["Period Missed"];
-                            });
+                            int bNghi = snapshotStu.data.documents[0].data["Period Missed"];
+
                            return  Container(
                                 height: 65,
                                 width: size.width,
