@@ -29,26 +29,40 @@ class _AdminPageState extends State<AdminPage> {
     return WillPopScope(
       child:Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: SizedBox(
+                width: 150,
+                height: 52,
+                child: RaisedButton(
+                  onPressed:(){
+                    _fire.logOut(
+                        isLogOut: (){
+                          LoadingDialog.showLoadingDialog(context, "Đăng xuất");
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                        },
+                        isErr: (err){
+                          ErrorDialog.showErrorDialog(context: context,msg: err);
+                        }
+                    );
+                  }
+                  ,
+                  child: Text(
+                    "Đăng xuất",
+                    style: TextStyle(color: Colors.blue, fontSize: 18),
+                  ),
+                  color: Colors.white,
+
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(6))),
+                ),
+              ),
+            ),
+          ],
           title: Text(
             "ADMIN",
-          ),
-        ),
-        floatingActionButton: new FloatingActionButton(
-          onPressed:(){
-            _fire.logOut(
-                isLogOut: (){
-                  LoadingDialog.showLoadingDialog(context, "Đăng xuất");
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>LoginPage()));
-                },
-                isErr: (err){
-                  ErrorDialog.showErrorDialog(context: context,msg: err);
-                }
-            );
-          }
-          ,
-          child: Text(
-            "Đăng Xuất",
-            style: TextStyle(color: Colors.white, fontSize: 18),
           ),
         ),
         body: Container(
